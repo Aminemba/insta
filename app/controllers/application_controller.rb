@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   include PostsHelper
+  require 'will_paginate/array'
 
   helper_method :logged_in?, :current_user
 
@@ -12,12 +13,5 @@ class ApplicationController < ActionController::Base
       redirect_to new_session_path
     end
   end
-
-  # def avatar_url user
-  # return user.image if user.image
-  # gravatar_id = Digest::MD5::hexdigest(current_user.id).downcase
-  # "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
-  # end
-
 
 end

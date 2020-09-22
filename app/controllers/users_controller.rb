@@ -71,12 +71,12 @@ class UsersController < ApplicationController
 
   def user_params
   params.permit( :name, :email, :password , :password_confirmation)
-end
+  end
 
-  # def avatar_url user
-  # return user.image if user.image
-  # gravatar_id = Digest::MD5::hexdigest(current_user.id).downcase
-  # "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
-  #  end
+  def avatar_url user
+  return user.image if user.image
+  gravatar_id = Digest::MD5::hexdigest(@user.id).downcase
+  "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
+   end
 
 end

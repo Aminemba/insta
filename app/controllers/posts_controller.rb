@@ -2,9 +2,12 @@ class PostsController < ApplicationController
     before_action :set_post, only: [:show, :edit, :update, :destroy]
     before_action :logged_in?
 
+  require 'will_paginate/array'
+  
   def index
-      @post = Post.new
       @posts = Post.all
+      @posts = @posts.paginate(page: params[:page], per_page: 5).order('created_at DESC')
+      @post = Post.new
     end
 
     def show
@@ -76,5 +79,6 @@ class PostsController < ApplicationController
   # def current_user
   #   @current_user ||= User.find_by(id: session[:user_id])
   # end
+
 
 end
