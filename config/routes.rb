@@ -13,8 +13,9 @@ Rails.application.routes.draw do
       post :confirm
     end
     resources :likes, module: :posts
+    resources :bookmarks, module: :posts
     resources :comments, only: [:create, :destroy] do
-    resources :likes, module: :comments
+      resources :likes, module: :comments
       end
     end
 end

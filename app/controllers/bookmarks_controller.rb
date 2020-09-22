@@ -1,63 +1,29 @@
 class BookmarksController < ApplicationController
-  before_action :set_bookmark, only: [:show, :edit, :update, :destroy]
-
-  def index
-    @bookmarks = Bookmark.all
-  end
-
-  def show
-  end
-
-  def new
-    @bookmark = Bookmark.new
-  end
-
-  def edit
-  end
+  before_action :authenticate_user!
 
   def create
-    @bookmark = Bookmark.new(bookmark_params)
-
-    respond_to do |format|
-      if @bookmark.save
-        format.html { redirect_to @bookmark, notice: 'Bookmark was successfully created.' }
-        format.json { render :show, status: :created, location: @bookmark }
-      else
-        format.html { render :new }
-        format.json { render json: @bookmark.errors, status: :unprocessable_entity }
-      end
+    @bookmark = current_user.bookmarks.build(bookmark_params)
+    if @bookmark.save
+      @post = @bookmark.post
+      @is_bookmarked = @bookmark
+      respond_to :js
+    else
+      flash[:alert] = "Something went wrong ..."
     end
   end
-
-
-  def update
-    respond_to do |format|
-      if @bookmark.update(bookmark_params)
-        format.html { redirect_to @bookmark, notice: 'Bookmark was successfully updated.' }
-        format.json { render :show, status: :ok, location: @bookmark }
-      else
-        format.html { render :edit }
-        format.json { render json: @bookmark.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
 
   def destroy
-    @bookmark.destroy
-    respond_to do |format|
-      format.html { redirect_to bookmarks_url, notice: 'Bookmark was successfully destroyed.' }
-      format.json { head :no_content }
+    @bookmark = Bookmark.find(params[:id])
+    @post = @bookmark.post
+    if @bookmark.destroy
+      respond_to :js
+    else
+      flash[:alert] = "Something went wrong ..."
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_bookmark
-      @bookmark = Bookmark.find(params[:id])
-    end
-
-    def bookmark_params
-      params.fetch(:bookmark, {})
-    end
+  def bookmark_params
+    params.permit :user_id, :post_id
+  end
 end

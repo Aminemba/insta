@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [ :show , :edit, :update, :destroy]
 
   def show
+    
     set_meta_tags title: @user.name
     @posts = @user.posts.includes(:photos, :likes, :comments)
     @saved = Post.joins(:bookmarks).where("bookmarks.user_id=?", current_user.id).

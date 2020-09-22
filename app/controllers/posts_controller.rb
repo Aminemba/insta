@@ -3,7 +3,7 @@ class PostsController < ApplicationController
     before_action :logged_in?
 
   require 'will_paginate/array'
-  
+
   def index
       @posts = Post.all
       @posts = @posts.paginate(page: params[:page], per_page: 5).order('created_at DESC')
@@ -25,18 +25,23 @@ class PostsController < ApplicationController
     end
 
     def create
-      @post = Post.new(post_params)
+        @post = Post.new(post_params)
 
-      respond_to do |format|
-        if @post.save
-          format.html { redirect_to @post, notice: 'Post was successfully created.' }
-          format.json { render :show, status: :created, location: @post }
-        else
-          format.html { render :new }
-          format.json { render json: @post.errors, status: :unprocessable_entity }
+        respond_to do |format|
+          if @post.save
+            format.html { redirect_to @post, notice: 'Post was successfully created.' }
+            format.json { render :show, status: :created, location: @post }
+          else
+            format.html { render :new }
+            format.json { render json: @post.errors, status: :unprocessable_entity }
+          end
         end
-      end
     end
+
+    def confirm
+      @post = current_user.posts.build(post_params)
+      @post.id = params[:id]
+   end
 
 
 
@@ -53,10 +58,7 @@ class PostsController < ApplicationController
     end
   end
 
-  def confirm
-    @post = current_user.posts.build(post_params)
-    @post.id = params[:id]
- end
+
 
   def destroy
     @post.destroy
