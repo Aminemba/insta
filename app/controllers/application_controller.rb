@@ -13,4 +13,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # def avatar_url user
+  # return user.image if user.image
+  # gravatar_id = Digest::MD5::hexdigest(current_user.id).downcase
+  # "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
+  # end
+
+
 end

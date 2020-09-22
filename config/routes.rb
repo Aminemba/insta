@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :sessions,only: [:new , :create, :destroy]
   get "/sessions/:id", to: "sessions#destroy"
+  post "/sessions/new", to: "users#index"
 
   resources :users
 

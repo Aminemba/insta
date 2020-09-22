@@ -3,16 +3,17 @@ class UsersController < ApplicationController
   before_action :set_user, only: [ :show , :edit, :update, :destroy]
 
   def show
-    @user = User.find(params[:id])
-    @posts = @user.posts.paginate(page: params[:page])
-    @post = @user.posts.build
-    @comments = Comment.all
+    set_meta_tags title: @user.name
+    @posts = @user.posts.includes(:photos, :likes, :comments)
+    @saved = Post.joins(:bookmarks).where("bookmarks.user_id=?", current_user.id).
+      includes(:photos, :likes, :comments) if @user == current_user
   end
 
   def index
+    @user = User.new(user_params)
     @users = User.all
-    @friendships = current_user.friendships
-    @inverse_friendships = current_user.inverse_friendships
+    gravatar_id = Digest::MD5::hexdigest(current_user.id).downcase
+    "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
   end
 
 
@@ -67,7 +68,15 @@ class UsersController < ApplicationController
   def set_user
     @user = User.find(params[:id])
   end
+
   def user_params
-    params.require(:user).permit( :name, :email, :password , :password_confirmation)
-  end
+  params.permit( :name, :email, :password , :password_confirmation)
+end
+
+  # def avatar_url user
+  # return user.image if user.image
+  # gravatar_id = Digest::MD5::hexdigest(current_user.id).downcase
+  # "https://www.gravatar.com/avatar/#{gravatar_id}.jpg"
+  #  end
+
 end
